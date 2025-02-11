@@ -1,7 +1,7 @@
 # **ATL06: Lasr Lottery**  
 
 ## **Project Team**  
-- Jack Hayes ([@yJack-Hayes](https://github.com/jack-hayes))  
+- Jack Hayes ([@Jack-Hayes](https://github.com/jack-hayes))  
 - Collaborators (this could be you!)  
 
 ## **Project Overview**  
