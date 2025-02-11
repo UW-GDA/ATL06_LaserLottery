@@ -10,6 +10,9 @@
 ## **Background**  
 Launched on **September 15, 2018**, **[ICESat-2](https://icesat-2.gsfc.nasa.gov/)** is a NASA satellite that measures global elevation using the **Advanced Topographic Laser Altimeter System (ATLAS)**. ATLAS fires **10,000 laser pulses per second**, each containing **~300 trillion photons**, but only a handful return to the sensor. These photons are then processed by algorithms such as **ATL06**, which estimates land ice surface height by filtering noise and computing along- and across-track slopes.
 
+![ICESat-2 Beams (Smith et al., 2019)](icesat2_beams.jpg)  
+*Figure: ICESat-2 beam configuration (Smith et al., 2019).*
+
 ICESat-2 supports multiple applications through various data products, with a few listed below:  
 - **ATL03:** Raw photon cloud data  
 - **ATL06:** Land ice elevation (our focus)  
@@ -67,4 +70,4 @@ We will leverage multiple tools to process and analyze the data:
 - **Farr, T. (2007).** *Shuttle Radar Topography Mission (SRTM) Data Processing and Applications.*  
 
 ---  
-### *"Because counting photons is more complicated than it sounds."*  🚀❄️
+### *Because counting photons is more complicated than it sounds*  🚀❄️
