@@ -1,4 +1,4 @@
-# **ATL06: Lasr Lottery**  
+# **ATL06: Laser Lottery**  
 
 ## **Project Team**  
 - Jack Hayes ([@Jack-Hayes](https://github.com/jack-hayes))  
@@ -53,7 +53,7 @@ We will leverage multiple tools to process and analyze the data:
 ## **Related Work**  
 - **[ICESAT-2 HackWeek: Surfit](https://github.com/ICESAT-2HackWeek/surfit)** – Prior work on surface fitting algorithms for ICESat-2.  
 - **[ICESat-2 Data Portal](https://icesat-2.gsfc.nasa.gov/)** – Official mission website.  
-- **[ICESat-2 Land Ice Elevation Paper](https://www.sciencedirect.com/science/article/pii/S0034425719303712)** – Foundational ATL06 research.  
+- **[ICESat-2 Land Ice Elevation Paper](https://www.sciencedirect.com/science/article/pii/S0034425719303712)** – Foundational ICESat-2 paper.  
 
 ## **References**  
 - **National Academies of Sciences, Engineering, and Medicine (2018).** *Thriving on Our Changing Planet: A Decadal Strategy for Earth Observation from Space.* [DOI: 10.17226/24938](https://doi.org/10.17226/24938).  
