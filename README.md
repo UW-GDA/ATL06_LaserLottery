@@ -19,11 +19,17 @@ ICESat-2 supports multiple applications through various data products, with a fe
 For more details, see the **[ICESat-2 Data Products](https://icesat-2.gsfc.nasa.gov/science/data-products)**.
 
 ## **Problem Statement & Objectives**  
-While ATL06 is widely used for land ice elevation, alternative processing techniques may provide improved accuracy in complex terrain and vegetation. We aim to:  
-- Compare **ATL06's standard processing** to **custom photon-counting algorithms**.  
-- Assess performance over **varying vegetation and terrain** types.
-- Understand **why** some algorithms perform better than others.  
-- Investigate implications for **multi-modal elevation fusion** for NASA's **STV Incubation program**.
+Accurate and high-resolution topographic data are crucial for understanding Earth’s **dynamic surface processes**, including **glacier retreat, vegetation structure, and elevation changes**. The **National Academy of Sciences’ 2017–2027 Decadal Survey for Earth Observation** identified these datasets as priority observables for NASA Earth Science ([National Academies, 2018](https://doi.org/10.17226/24938)). In response, NASA’s **Surface Topography and Vegetation (STV) Incubation Program** aims to develop **next-generation multi-modal elevation datasets** by integrating **satellite and airborne data**.
+
+Unlike past efforts such as **SRTM (Shuttle Radar Topography Mission)**, which provided a near-global topographic dataset over 11 days in 2001, STV seeks to **fuse elevation measurements from lidar, optical stereo, and synthetic aperture radar (SAR)** collected at different times. This integration introduces several challenges:
+- **Variability in measurement techniques** (e.g., photon-counting lidar vs. radar)
+- **Differences in spatial resolution and sensor geometry**
+- **Real surface changes over time** (e.g., vegetation growth, ice melt)
+
+ATL06 is a standard processing algorithm for ICESat-2, but its **performance and biases** in non-glacial environments remain **poorly understood**. Comparing ATL06-derived elevations with alternative photon classification methods is essential to:
+- **Identify systematic biases** in ICESat-2’s elevation products
+- **Understand why ATL06-derived elevations disagree with other altimetry sources** (e.g., airborne LiDAR, stereo photogrammetry, radar DEMs)
+- **Improve the accuracy of fused elevation datasets for STV**
 
 ## **Datasets**  
 We will analyze ICESat-2 elevation data alongside:  
