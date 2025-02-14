@@ -1,4 +1,5 @@
-# **ATL06: Laser Lottery**  
+# **ATL06: Laser Lottery**  ![vibe](https://github.com/ZachSaucier/fave-slackmojis/blob/fb4652bf2fa040fad7df413d1bf059d2f461b44a/emojis/doge-dance.gif?raw=true)
+
 
 ## **Project Team**  
 - Jack Hayes ([@Jack-Hayes](https://github.com/jack-hayes))  
