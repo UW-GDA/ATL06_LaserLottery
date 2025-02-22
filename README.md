@@ -1,4 +1,4 @@
-# **ATL06: Laser Lottery**  
+# **ATL06: Laser Lottery** ![what da dog doin](https://github.com/tlberglund/animated-gifs/blob/3cd940af8cd795393388f117f4e8c091cde72d0c/corgi-diving.gif)
 
 ## **Project Team**  
 - Jack Hayes ([@Jack-Hayes](https://github.com/jack-hayes))  
