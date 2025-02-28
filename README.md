@@ -36,28 +36,30 @@ ATL06 is a standard processing algorithm for ICESat-2, but its **performance and
 - **Understand why ATL06-derived elevations disagree with other altimetry sources** 
 - **Improve the accuracy of fused elevation datasets for STV**
 
-In the context of our project, we will hone in on understanding why ATL06-derived elevations disagree with "ground truth" altimetry derived from aerial LiDAR DSMs. Additionally, we will focus on a small subset of the [CO West Central 2019](https://portal.opentopography.org/usgsDataset?dsid=CO_WestCentral_2019) 3DEP mission dlown over western Colorado in August and September of 2019 which was selected as a site for STV's [Precursor Coincident Dataset](https://science.nasa.gov/earth-science/decadal-surveys/decadal-stv/coincident-datasets/) efforts. The site was selected due to the fortuitous collection of coincident, near-contemporaneous elevation datasets (VHR in-track stereo, GEDI, ICESat-2, aerial LIDAR) over the area and we utilize this site because the aerial LiDAR DSM has already been processed with custom parameters, and we want to avoid using vendor-generated products. We will just be focusing on the ICESat-2 and aerial LiDAR observations, though. The site exhibits high elevation (2500-4300m) and relief with various types of vegetation, containing bare ground for control points as well.
+In the context of our project, we will hone in on understanding why ATL06-derived elevations disagree with "ground truth" altimetry derived from aerial LiDAR DEMs over differing vegetation. These DEMs are genereated from the USGS 3DEP program and are commonly used as "ground truth" reference for elevation/altimetry comparison studies. We hope to gather diverse samples of ATL06 measurements across diverse vegetation types and ecozones over the contiguous US.We will evaluate the performance over various custom ATL06 processing algorithms over these sites. These sites have been chosen to eliminate temporal decorrelation between ICESat-2 and the reference DEMs, where ICESat-2 points are within 14 days of the USGS DEM acquisition date. Acquisition years range from 2019 to 2022.
 
 ## **Datasets**  
 We will analyze ICESat-2 elevation data alongside:  
-- **[USGS 3DEP Aerial LiDAR DSMs](https://www.usgs.gov/3d-elevation-program)** – High-resolution airborne LiDAR DSMs derived via custom [PDAL](https://pdal.io/en/2.8.4/) processing pipelines. Treated as "ground truth" elevation.
-- **[ESA WorldCover LULC](https://esa-worldcover.org/en)** – THIS IS TO-BE UPDATED WITH CUSTOM "ECOZONES" AS SEEN FROM [Malambo et al. 2021](https://www.sciencedirect.com/science/article/pii/S0034425721004314) AND MORE DISTINCT LULC IN GENERAL
+- **[USGS 3DEP Aerial LiDAR DEMs](https://www.usgs.gov/3d-elevation-program)** – High-resolution airborne LiDAR DEMs treated as "ground truth" elevation. Respective 3DEP DEM values are sampled with [SlideRule's functionality](https://github.com/SlideRuleEarth/sliderule-python/blob/main/examples/3dep_gedi_sample.ipynb).
+- **[NLCD LULC 2021](https://www.mrlc.gov/data/nlcd-2021-land-cover-conus)** – 2021 National Land Cover Database product. Includes [diverse characterizations of land cover](https://www.mrlc.gov/data/legends/national-land-cover-database-class-legend-and-description), processed by the USGS partnered with other federal insitutions by [running unsupervised clustering algorithms on Landsat data](https://www.gismanual.com/earthshelter/National%20Land-Cover%20Dataset%20(NLCD)%20Metadata%20%20US%20EPA.htm#:~:text=The%20general%20NLCD%20procedure%20is,ancillary%20data%20source(s)%2C).
 
 ## **Tools & Software**  
 We will leverage multiple tools to process and analyze the data:  
-- **[SlideRule](https://slideruleearth.io/)** – NASA’s cloud-based ICESat-2 processing framework, supporting both standard and **custom algorithms**.   
-- **[GeoPandas](https://geopandas.org/)** – Spatial data analysis for our ICESat-2 points and other relevant vector geometries.  
-- **[Xarray](https://docs.xarray.dev/en/stable/)** – Handling multi-dimensional elevation datasets and other relevant rasters and nDarrays.  
+- **[SlideRule](https://slideruleearth.io/)** – Cloud-based ICESat-2 processing framework, supporting both standard and **custom algorithms**.   
+- **[GeoPandas](https://geopandas.org/)** – Used for spatial data analysis for our ICESat-2 points and other relevant vector geometries.  
+- **[Xarray](https://docs.xarray.dev/en/stable/)** – Used for handling multi-dimensional elevation datasets and other relevant rasters and nDarrays.  
+- **[easysnowdata](https://egagli.github.io/easysnowdata/)** – Used for grabbing NLCD data thanks to my favorite 5th year grad student 👉👈🥰.
+- probably scipy stats and numpy for elevation value comparison and evaluation
 
 ## **Methodology**  
-1. **Preprocess Differing Elevation Measurement Sources** – Retrieve elevation profiles over the study area for the different datasets.  
+1. **Preprocess Differing Elevation Measurement Sources** – Retrieve elevation profiles over our predetermined sites. (maybe subsample the sites)
 2. **Apply Custom Photon-Counting Algorithms** – Implement alternative processing methods in SlideRule via gridsearch.  
-3. **Compare with Reference Datasets** – Validate against aerial LiDAR based on terrain, land cover, and algorithmic differences.
+3. **Compare with Reference Datasets** – Validate against USGS 3DEP DEMs.
 4. **Tie Findings into NASA’s STV Framework** – Assess how these techniques fit into broader Earth observation objectives.
 
 ## **Expected Outcomes**  
-- Identification of conditions where **custom photon-counting algorithms** outperform standard ATL06 processing.  
-- Insights into **terrain- and vegetation-dependent biases** in ICESat-2 elevation retrievals.  
+- Identification of vegetation where **custom photon-counting algorithms** outperform standard ATL06 processing.  
+- Insights into **vegetation-dependent biases** in ICESat-2 elevation retrievals.  
 - Contributions to NASA’s **STV Incubation program** for **multi-modal elevation fusion**.  
 
 ## **Related Work**  
