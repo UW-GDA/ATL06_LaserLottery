@@ -100,7 +100,6 @@ def main():
         out_filename = f"/home/jehayes/gda_final/ATL06_LaserLottery/data/OR_McKenzieRiver_1_2021_atl06/atl06_{len_val}_{res_val}_{cnt_val}_{ats_val}.parquet"
         gf_atl06_points_utm.to_parquet(out_filename)
 
-        break
 
 if __name__ == '__main__':
     main()
