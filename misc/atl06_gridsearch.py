@@ -98,7 +98,7 @@ def main():
         gf_atl06_points_utm['elev_diff'] = gf_atl06_points_utm['h_mean'] - gf_atl06_points_utm['dem_elev']
 
         out_filename = f"/home/jehayes/gda_final/ATL06_LaserLottery/data/OR_McKenzieRiver_1_2021_atl06/atl06_{len_val}_{res_val}_{cnt_val}_{ats_val}.parquet"
-        gf_atl06_points_utm.to_parquet(out_filename)
+        gf_atl06_points_utm
 
 
 if __name__ == '__main__':

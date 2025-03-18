@@ -155,3 +155,137 @@ def hist_nlcd(gdf: pd.DataFrame, min_count: int = 30, color_dict: dict[str, str]
     
     fig.suptitle("Elevation Differences by Land Cover (NLCD)", fontsize=14)
     return fig, axes
+
+def boxplot_nlcd(gdf: pd.DataFrame, min_count: int = 30, figsize: tuple = None) -> tuple[plt.Figure, plt.Axes]:
+    """
+    Create boxplots of elevation differences by NLCD land cover class with observation counts.
+    
+    Parameters
+    ----------
+    gdf : pd.DataFrame or GeoDataFrame
+        DataFrame containing the NLCD data and elevation differences.
+        Required columns:
+        - 'nlcd_value': numeric NLCD code
+        - 'nlcd_label': text label for the NLCD code
+        - 'elev_diff': elevation difference values to be plotted
+    min_count : int, default=30
+        Minimum number of data points required for a group to be included.
+    figsize : tuple, optional
+        Figure size as (width, height). If None, size is calculated based on number of groups.
+        
+    Returns
+    -------
+    fig : plt.Figure
+        The created matplotlib Figure.
+    ax : plt.Axes
+        The main matplotlib Axes object.
+    """
+    # Group by NLCD class using both nlcd_value and nlcd_label
+    groups = gdf.groupby(["nlcd_value", "nlcd_label"])
+    filtered_groups = [
+        (nlcd_value, nlcd_label, group) 
+        for (nlcd_value, nlcd_label), group in groups 
+        if len(group) >= min_count
+    ]
+    
+    num_groups = len(filtered_groups)
+    if num_groups == 0:
+        raise ValueError("No NLCD groups with at least min_count points.")
+    
+    # Calculate appropriate figure size based on number of groups if not provided
+    if figsize is None:
+        # Width increases with number of groups, but has a minimum
+        width = max(10, num_groups * 0.6)
+        figsize = (width, 8)
+    
+    fig, ax = plt.subplots(figsize=figsize, constrained_layout=True)
+    
+    # Prepare data for boxplot
+    box_data = []
+    group_labels = []
+    counts = []  # For the secondary y-axis
+    nlcd_colors_list = []  # To store colors for each group
+    
+    # First pass: collect data
+    for nlcd_value, nlcd_label, group in filtered_groups:
+        # Get clean elevation difference data (drop NaNs)
+        elev_diff = group["elev_diff"].dropna()
+        
+        box_data.append(elev_diff)
+        group_labels.append(nlcd_label)
+        counts.append(len(elev_diff))
+        nlcd_colors_list.append(nlcd_colors.get(nlcd_value, "#cccccc"))
+    
+    # Create the boxplot
+    boxplots = ax.boxplot(
+        box_data,
+        orientation="vertical",
+        patch_artist=True,
+        showfliers=True,
+        boxprops={"facecolor": "lightgray", "color": "black"},
+        flierprops={"marker": "x", "color": "black", "markersize": 5, "alpha": 0.6},
+        medianprops={"color": "black"},
+        positions=np.arange(len(box_data)),
+    )
+    
+    # Color each box according to the NLCD color
+    for patch, color in zip(boxplots["boxes"], nlcd_colors_list):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.7)
+    
+    # Set x-axis labels
+    ax.set_xticks(np.arange(len(group_labels)))
+    ax.set_xticklabels(group_labels, rotation=45, ha="right")
+    
+    # Set y-axis label
+    ax.set_ylabel("Elevation Difference (m)", fontsize=12)
+    
+    # Add reference lines
+    ax.axhline(0, color="black", linestyle="dashed", linewidth=0.7)
+    
+    #global_median = np.nanmedian(np.concatenate([d for d in box_data]))
+    global_median = np.nanmedian(gdf["elev_diff"])
+    ax.axhline(
+        global_median,
+        color="magenta",
+        linestyle="dashed",
+        linewidth=0.7,
+        label=f"Global Med: {global_median:.2f}m",
+        alpha=0.8,
+    )
+    
+    # Add legend for the global median
+    ax.legend(loc="upper right")
+    
+    # Second axis for observation counts
+    ax2 = ax.twinx()
+    ax2.plot(np.arange(len(counts)), counts, "o", color="orange", alpha=0.6)
+    
+    # Dynamic y-ticks for observation counts
+    magnitude = 10 ** np.floor(np.log10(max(counts)))
+    min_count = np.floor(min(counts) / magnitude) * magnitude
+    max_count = np.ceil(max(counts) / magnitude) * magnitude
+    ticks = np.linspace(min_count, max_count, 11)
+    ax2.set_yticks(ticks)
+    
+    # Style the secondary y-axis
+    ax2.spines["right"].set_color("orange")
+    ax2.tick_params(axis="y", colors="orange")
+    ax2.set_ylabel("Count", color="orange", fontsize=12)
+    
+    # Set title
+    fig.suptitle("Elevation Differences by Land Cover (NLCD)", fontsize=14)
+    
+    # Ensure the x-axis limits give some padding
+    ax.set_xlim(-0.5, len(box_data) - 0.5)
+    
+    # Calculate reasonable y-axis limits for elevation differences
+    # Using percentiles instead of min/max to avoid extreme outliers affecting the view
+    all_diffs = np.concatenate(box_data)
+    y_min = np.percentile(all_diffs, 1)
+    y_max = np.percentile(all_diffs, 99)
+    # Add some padding
+    y_range = y_max - y_min
+    ax.set_ylim(y_min - 0.1 * y_range, y_max + 0.1 * y_range)
+    
+    return fig, ax
