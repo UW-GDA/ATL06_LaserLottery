@@ -128,7 +128,9 @@ In addition to these four parameters, the full SlideRule ATL06 processing workfl
 
 Our initial grid search only varied four parameters (len, res, cnt, ats) because we wanted a manageable search space given our limited time. However, the selected parameter space did not nearly capture the complexity of the algorithm. In our results, all combinations with a len of 30 produced identical outputs, and the same was true for those with a len of 40. This suggests that segment length (len) is the dominant factor in determining the output, while the effects of res, cnt, and ats were minimal within the tested range. In future work, we hope to expand the grid search to include additional parameters.
 
-TODO: insert table
+<p align="center">
+  <img src="images/gridsearch_table.png" width="650" height="550">
+</p>
 
 Additionally, the sampling for NLCD values occured after our grid search in yet another `for loop`. This loop only took one second, though, and is easily implementable to the broader script. In this loop, we read in the parquet files at [data/OR_McKenzieRiver_1_2021_atl06](https://github.com/UW-GDA/ATL06_LaserLottery/tree/main/data/OR_McKenzieRiver_1_2021_atl06), sample the NLCD value and label at every point in the geodataframe and add those values as new columns, and write our results to new parquet files at [data/OR_McKenzieRiver_1_2021_gridsearch](https://github.com/UW-GDA/ATL06_LaserLottery/tree/main/data/OR_McKenzieRiver_1_2021_gridsearch).
 
@@ -169,31 +171,39 @@ Unlike past efforts such as **SRTM (Shuttle Radar Topography Mission)**, which p
 
 Given the limited scope of our final project, we're mainly concerned with the question **what biases are introduced by different ATL06 processing parameters, how do these biases change over varying terrain and land cover characteristics, and why?**
 
-ATL06 is a standard processing algorithm for ICESat-2, but its **performance and biases** in non-glacial environments remain **poorly understood**. Comparing customized ATL06 photon processing methods, using the "standard" ATL06 processing as reference, is essential to:
+Why ATL06? This has become the runaway algorithm to use for processing ICESat-2 data for a wide range of applications such as forest management, water resources, urban development, and more
+* Vegetation canopy height measurements (H. Travers-Smith et al., 2024) https://doi.org/10.1016/j.rse.2024.114097
+* Meltwater Depth Estimates (Fricker et al., 2020) https://doi.org/10.1029/2020GL090550
+* Forest biomass estimation (Duncanson et al., 2020) https://doi.org/10.1016/j.rse.2020.111779
+* Urban elevation modeling (Lao et al., 2021) https://doi.org/10.1016/j.jag.2021.102596
+
+Despite this, ATL06's **performance and biases** in non-glacial environments remain **poorly understood**. Comparing customized ATL06 photon processing methods, using the "standard" ATL06 processing as reference, is essential to:
 - **Identify systematic biases** in ICESat-2’s elevation products
 - **Understand why ATL06-derived elevations disagree with other altimetry sources** 
 - **Improve the accuracy of fused elevation datasets for STV**
 
-In the context of our project, we will hone in on understanding why ATL06-derived elevations disagree with "ground truth" altimetry derived from aerial LiDAR DEMs over differing vegetation. These DEMs are genereated from the USGS 3DEP program and are commonly used as "ground truth" reference for elevation/altimetry comparison studies. We hope to gather diverse samples of ATL06 measurements across diverse vegetation types and ecozones over the contiguous US.We will evaluate the performance over various custom ATL06 processing algorithms over these sites. These sites have been chosen to eliminate temporal decorrelation between ICESat-2 and the reference DEMs, where ICESat-2 points are within 14 days of the USGS DEM acquisition date. Acquisition years range from 2019 to 2022.
+In the context of our project, we will hone in on understanding why ATL06-derived elevations disagree with "ground truth" altimetry derived from aerial LiDAR DEMs over differing vegetation. These DEMs are genereated from the USGS 3DEP program and are commonly used as "ground truth" reference for elevation/altimetry comparison studies. We hope to gather diverse samples of ATL06 measurements across diverse vegetation types over the contiguous US. We will evaluate the performance over various custom ATL06 processing algorithms over these sites. These sites have been chosen to eliminate temporal decorrelation between ICESat-2 and the reference DEMs, where ICESat-2 points are within 14 days of the USGS DEM acquisition date.
+
+Despite this hope, we ended up only working on a singular site due to time contraints, but this work is scalable.
 
 ## **Datasets**  
 We will analyze ICESat-2 elevation data alongside:  
-- **[USGS 3DEP Aerial LiDAR DEMs](https://www.usgs.gov/3d-elevation-program)** – High-resolution airborne LiDAR DEMs treated as "ground truth" elevation. Respective 3DEP DEM values are sampled with [SlideRule's functionality](https://github.com/SlideRuleEarth/sliderule-python/blob/main/examples/3dep_gedi_sample.ipynb).
+- **[USGS 3DEP Aerial LiDAR DEMs](https://www.usgs.gov/3d-elevation-program)** – High-resolution airborne LiDAR DEMs treated as "ground truth" elevation. 
 - **[NLCD LULC 2021](https://www.mrlc.gov/data/nlcd-2021-land-cover-conus)** – 2021 National Land Cover Database product. Includes [diverse characterizations of land cover](https://www.mrlc.gov/data/legends/national-land-cover-database-class-legend-and-description), processed by the USGS partnered with other federal insitutions by [running unsupervised clustering algorithms on Landsat data](https://www.gismanual.com/earthshelter/National%20Land-Cover%20Dataset%20(NLCD)%20Metadata%20%20US%20EPA.htm#:~:text=The%20general%20NLCD%20procedure%20is,ancillary%20data%20source(s)%2C).
 
 ## **Tools & Software**  
-We will leverage multiple tools to process and analyze the data:  
+We will leverage multiple tools to process and analyze the data, the main packages being:  
 - **[SlideRule](https://slideruleearth.io/)** – Cloud-based ICESat-2 processing framework, supporting both standard and **custom algorithms**.   
 - **[GeoPandas](https://geopandas.org/)** – Used for spatial data analysis for our ICESat-2 points and other relevant vector geometries.  
 - **[Xarray](https://docs.xarray.dev/en/stable/)** – Used for handling multi-dimensional elevation datasets and other relevant rasters and nDarrays.  
+- **[Coincident](https://coincident.readthedocs.io/en/latest/)** – Used to fetch relevant spatiotemporal metadata for 3DEP products and serves as an inspiration for our own custom processing in terms of STAC searches and SlideRule calls.
 - **[easysnowdata](https://egagli.github.io/easysnowdata/)** – Used for grabbing NLCD data thanks to my favorite 5th year grad student 👉👈🥰.
-- probably scipy stats and numpy for elevation value comparison and evaluation
 
 ## **Methodology**  
-1. **Preprocess Differing Elevation Measurement Sources** – Retrieve elevation profiles over our predetermined sites. (maybe subsample the sites)
+1. **Preprocess Differing Elevation Measurement Sources** – Retrieve 3DEP and ICESat-2 default ATL06 elevations over our site.
 2. **Apply Custom Photon-Counting Algorithms** – Implement alternative processing methods in SlideRule via gridsearch.  
 3. **Compare with Reference Datasets** – Validate against USGS 3DEP DEMs.
-4. **Tie Findings into NASA’s STV Framework** – Assess how these techniques fit into broader Earth observation objectives.
+4. **Tie Findings into NASA’s STV Framework** – Assess notable biases and how different processing approaches fit into broader Earth observation objectives.
 
 ## **Expected Outcomes**  
 - Identification of vegetation where **custom photon-counting algorithms** outperform standard ATL06 processing.  
