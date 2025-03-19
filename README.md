@@ -1,4 +1,4 @@
-# **ATL06: Laser Lottery** ![what da dog doin](https://github.com/tlberglund/animated-gifs/blob/3cd940af8cd795393388f117f4e8c091cde72d0c/corgi-diving.gif)
+# **ATL06: Laser Lottery** ![what da dog doin](https://github.com/pop/gif_collection/blob/6dc8310a550f593be0d59cadf92f61104b27ff61/077%20-%20rave%20dog.gif)
 
 ## **Project Team**  
 - Jack Hayes ([@Jack-Hayes](https://github.com/jack-hayes))  
@@ -8,12 +8,12 @@
 **ATL06: Laser Lottery** is a comparative analysis of ICESat-2's ATL06 land ice elevation algorithm and custom photon-counting approaches. Using a variety of elevation datasets, we aim to assess the impact of different processing strategies on elevation retrievals over diverse terrain and vegetation. Our goal is to determine why certain processing algorithms perform better in specific conditions and how they can contribute to NASA's **Surface Topography and Vegetation (STV) Incubation program** efforts.
 
 ## **Project Description**
-> Here, we outline the steps taken for this project, referencing specific notebook and code. See the ['Background'](##Background) section and corresponding sections below for the motivation and contextual information.
+> Here, we outline the steps taken for this project, referencing specific notebook and code. See the ['Background'](#Background) section and corresponding sections below for the motivation and contextual information.
 
 #### [notebooks/00_aoi.ipynb](https://github.com/UW-GDA/ATL06_LaserLottery/blob/main/notebooks/00_aoi.ipynb) shows the introduction to our study area, USGS 3DEP site [OR_McKenzieRiver_1_2021](https://wifire-data.sdsc.edu/dataset/or_mckenzieriver_1_2021). 
 
 <p align="center">
-  <img src="images/aoi.png" width="1000" height="600">
+  <img src="images/aoi.png" width="1000" height="450">
 </p>
 
 <div style="display: flex; flex-wrap: nowrap; align-items: flex-start; min-width: 1200px;">
@@ -68,7 +68,7 @@ Default ATL06 h_mean minus 3DEP Elevations | Contextual Data
 We can already see the drastic overestimation of ICESat-2 over the areas of high slope and forest coverage via manual interpretation, at over 5 meters of bias. We have to understand that we're in dense coniferous forests in the southern Cascades where we see these differences, a challenging area to gather accurate LIDAR measurements. 
 
 <p align="center">
-  <img src="images/hist_default_nlcd.png" width="1000" height="800">
+  <img src="images/hist_default_nlcd.png" width="1000" height="750">
 </p>
 
 Our histograms of elevation differences above, grouped by landcover values for the NLCD 2021 data, reveal that our bias is actually 10s of meters for evergreen forests. Sampling for each point's respective NLCD class value can be found at [misc/nlcd_sample.py](https://github.com/UW-GDA/ATL06_LaserLottery/blob/main/misc/nlcd_sample.py). For this, we sampled points rather than the footprints for efficiency sake. Ideally, we would use the same 40m footprints as we did for the 3DEP elevation sampling and assign land cover values based on the class of pixels that appears most in that 40m overlap.
@@ -76,7 +76,7 @@ Our histograms of elevation differences above, grouped by landcover values for t
 This discrepancy between elevation difference biases per land cover class is further accentuated when we focus on a singular beam from our ICESat-2 data.
 
 <p align="center">
-  <img src="images/beam_diff_nlcd.png" width="1000" height="600">
+  <img src="images/beam_diff_nlcd.png" width="1000" height="550">
 </p>
 
 In the above image, we see ICESat-2 elevation measurements from the most-eastward beam (which is a "strong" beam) and respectively sampled 3DEP elevation value where our x-axis is the along-track distance of the beam. Behind each elevation measurement is the sampled NLCD land cover class for the respective ATL06 point. The plot highlights the stark constrast in elevation differences; ATL06 measurements over evergreen forests close in proximity to non-forested areas have an significant visual bias in the elevation measurement compared to the neighboring non-forested area.
@@ -100,7 +100,21 @@ Where:
 | **cnt (Count)**        | Defines the minimum number of photons required in an extent for it to be valid. For example, if cnt is set to 10, any 40 m segment must contain at least 10 photons; lowering cnt to 5 may help in low-signal conditions.                                                                          |
 | **ats (Along-Track Spread)** | Requires that the photons in an extent span a minimum distance along the track, ensuring they aren’t too clustered. For instance, an ats of 10 m means the photons must cover at least 10 m of the extent. Lowering this value (e.g., to 5 m) relaxes the requirement. |
 
-TODO: insert ATL03 visualizations here
+ATL06 'len' example (40m)
+:-------------------------:
+<img src="images/atl03_len.png" style="width:100%; height:auto;" alt="ATL06 'len' example">
+
+ATL06 'res' example (len=40, res=20)
+:-------------------------:
+<img src="images/atl03_res_pre.png" style="width:100%; height:auto;" alt="ATL06 'res' example">
+
+ATL06 'cnt' example | ATL06 'cnt' removal (segment 2 didn't satisfy the cnt parameter)
+:-------------------------:|:-------------------------:
+<img src="images/atl03_cnt_pre.png" style="width:100%; height:auto;" alt="ATL06 'cnt' example"> | <img src="images/atl03_res_post.png" style="width:100%; height:auto;" alt="Contextual Data">
+
+ATL06 'ats' example | ATL06 'ats' removal (segment 2 didn't satisfy the ats parameter)
+:-------------------------:|:-------------------------:
+<img src="images/atl03_ats_pre.png" style="width:100%; height:auto;" alt="ATL06 'cnt' example"> | <img src="images/atl03_res_post.png" style="width:100%; height:auto;" alt="Contextual Data">
 
 In addition to these four parameters, the full SlideRule ATL06 processing workflow has many other parameters that affect photon selection and elevation estimation. In total, there are over 20 configurable parameters that range from photon classification to the iterative fitting process. For example, some of the ones I'd be curious to explore in the future include:
 
